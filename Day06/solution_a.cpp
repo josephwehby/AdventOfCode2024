@@ -2,7 +2,6 @@
 #include <vector>
 
 bool checkValid(std::vector<std::string>& map, int row, int col) {
-  if (row < 0 || col < 0 || row >= map.size() || col >= map[0].size()) return false;
   if (map[row][col] == '#') return false;
 
   return true;
