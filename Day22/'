@@ -1,0 +1,59 @@
+#include <iostream>
+#include <vector>
+#include <unordered_map>
+#include <algorithm>
+
+unsigned long long generate(unsigned long long secret) {
+  unsigned long long result;
+
+  result = secret * 64;
+  secret = (secret ^ result) % 16777216;
+  result = secret / 32;
+  secret = (secret ^ result) % 16777216;
+  result = secret * 2048;
+  secret = (secret ^ result) % 16777216;
+  
+  return secret;
+}
+
+unsigned long long maxSeq(std::vector<unsigned long long>& nums, std::vector<int>& changes) {
+  std::unordered_map<std::tuple<int,int,int,int>, unsigned long long> vals; 
+
+  for (int i = 1; i < 1997; i++) {
+    auto window = std::make_tuple(changes[i], changes[i+1], changes[i+2], changes[i+3]);
+    vals[window] += (changes[i+3])%10;
+  }
+
+  unsigned long long max = 0;
+  for (auto v : vals) {
+    max = (v.second > max) ? v.second : max;
+  }
+}
+
+int main() {
+  std::string line;
+  unsigned long long total = 0;
+  while (std::getline(std::cin, line)) {
+    
+    unsigned long long secret = std::stoull(line);
+    std::vector<unsigned long long> nums;
+    std::vector<int> changes;
+    
+    changes.push_back(0);
+    for (int i = 0; i < 2000; i++) {
+      nums.push_back(secret);
+      secret = generate(secret);
+      changes.push_back(secret%10 - nums[i]%10);
+    }
+    nums.push_back(secret);
+
+    for (int i = 0; i < 10; i++) {
+      std::cout << nums[i] << " " << changes[i] << std::endl;
+    }
+    return 1;
+    total += secret; 
+  }
+
+  std::cout << total << std::endl;
+  return 0;
+}
